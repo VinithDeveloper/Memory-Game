@@ -14,78 +14,96 @@ public class MemoryGame extends JFrame {
     private final int NUM_IMAGES = NUM_CARDS / 2;
     private final String IMAGE_DIR = "C:\\Users\\Vinith\\OneDrive\\Desktop\\testproject\\src\\testproject\\images\\";
 
-    private ArrayList<String> cardNames; // Liste zum Speichern der Namen der Karten
-    private ArrayList<ImageIcon> shuffledIcons; // Liste zum Speichern der gemischten Icons
-    private JButton[] cardButtons; // Array für die Kartenbuttons
-    private int pairsFound; // Anzahl der gefundenen Paare
-    private int firstCardIndex = -1; // Index der ersten aufgedeckten Karte
-    private int secondCardIndex = -1; // Index der zweiten aufgedeckten Karte
+    private ArrayList<String> cardNames;
+    private ArrayList<ImageIcon> shuffledIcons;
+    private JButton[] cardButtons;
+    private int pairsFound;
+    private int firstCardIndex = -1;
+    private int secondCardIndex = -1;
+    private int[] playerScores;
+    private int currentPlayer = 0;
 
     public MemoryGame() {
-        cardNames = new ArrayList<>(); // Neue Liste für die Karten-Namen erstellen
+        cardNames = new ArrayList<>();
         String[] imageNames = {"ananas.jpg", "apfel.jpg", "bananen.jpg", "birne.jpg", "erdbeere.jpg", "kirsche.jpg", "orange.jpg", "trauben.jpg", "wassermelone.jpg", "zitrone.jpg"};
         for (String imageName : imageNames) {
-            cardNames.add(imageName); // Karten-Namen zur Liste hinzufügen
-            cardNames.add(imageName); // Jeden Namen doppelt hinzufügen, um Paare zu erstellen
+            cardNames.add(imageName);
+            cardNames.add(imageName);
         }
 
-        shuffledIcons = new ArrayList<>(); // Neue Liste für die gemischten Icons erstellen
-        Collections.shuffle(cardNames); // Karten-Namen mischen
+        shuffledIcons = new ArrayList<>();
+        Collections.shuffle(cardNames);
 
-        cardButtons = new JButton[NUM_CARDS]; // Array für die Kartenbuttons erstellen
+        cardButtons = new JButton[NUM_CARDS];
         for (int i = 0; i < NUM_CARDS; i++) {
             JButton button = new JButton();
             button.setPreferredSize(new Dimension(CARD_SIZE, CARD_SIZE));
             button.addActionListener(new CardListener(i));
-            cardButtons[i] = button; // Button zum Array hinzufügen
+            cardButtons[i] = button;
         }
 
-        JPanel cardPanel = new JPanel(new GridLayout(ROWS, COLS)); // JPanel mit Rasterlayout erstellen
+        JPanel cardPanel = new JPanel(new GridLayout(ROWS, COLS));
         for (int i = 0; i < NUM_CARDS; i++) {
-            cardPanel.add(cardButtons[i]); // Kartenbuttons zum JPanel hinzufügen
+            cardPanel.add(cardButtons[i]);
         }
 
-        add(cardPanel); // JPanel zum JFrame hinzufügen
+        add(cardPanel);
         pack();
         setTitle("Memory Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        pairsFound = 0; // Anfangszustand: keine Paare gefunden
+        pairsFound = 0;
+        playerScores = new int[2]; // Array für die Punktzahlen der Spieler
     }
 
     private void showCard(int index) {
-        String imageName = cardNames.get(index); // Namen der Karte anhand des Index abrufen
-        String imagePath = IMAGE_DIR + imageName; // Pfad zum Bild erstellen
-        ImageIcon icon = new ImageIcon(imagePath); // ImageIcon mit dem Bild erstellen
-        Image image = icon.getImage().getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_SMOOTH); // Bild skalieren
-        cardButtons[index].setIcon(new ImageIcon(image)); // Icon zum Kartenbutton hinzufügen
-        cardButtons[index].setEnabled(false); // Kartenbutton deaktivieren, um ihn nicht erneut zu klicken
+        String imageName = cardNames.get(index);
+        String imagePath = IMAGE_DIR + imageName;
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image image = icon.getImage().getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_DEFAULT);
+        cardButtons[index].setIcon(new ImageIcon(image));
+        cardButtons[index].setEnabled(false);
     }
 
     private void hideCard(int index) {
-        cardButtons[index].setIcon(null); // Icon des Kartenbuttons entfernen
-        cardButtons[index].setEnabled(true); // Kartenbutton aktivieren, um ihn klickbar zu machen
+        cardButtons[index].setIcon(null);
+        cardButtons[index].setEnabled(true);
     }
 
     private void checkMatch() {
         if (cardNames.get(firstCardIndex).equals(cardNames.get(secondCardIndex)) && firstCardIndex != secondCardIndex) {
-            // Überprüfen, ob die Namen der Karten übereinstimmen und sie nicht dieselbe Karte sind
-            pairsFound++; // Anzahl der gefundenen Paare erhöhen
-            cardButtons[firstCardIndex].setEnabled(false); // Erstes Kartenpaar deaktivieren
-            cardButtons[secondCardIndex].setEnabled(false); // Zweites Kartenpaar deaktivieren
+            pairsFound++;
+            cardButtons[firstCardIndex].setEnabled(false);
+            cardButtons[secondCardIndex].setEnabled(false);
+            playerScores[currentPlayer]++; // Punktzahl für den aktuellen Spieler erhöhen
         } else {
-            hideCard(firstCardIndex); // Erstes Kartenpaar verstecken
-            hideCard(secondCardIndex); // Zweites Kartenpaar verstecken
+            hideCard(firstCardIndex);
+            hideCard(secondCardIndex);
+            currentPlayer = (currentPlayer + 1) % 2; // Wechsel zum nächsten Spieler
         }
+
+       
         if (pairsFound == NUM_IMAGES) {
-            // Überprüfen, ob alle Paare gefunden wurden
-            JOptionPane.showMessageDialog(this, "Congratulations, you won!"); // Gewinnmeldung anzeigen
-            System.exit(0); // Programm beenden
+            int player1Score = playerScores[0];
+            int player2Score = playerScores[1];
+            String winner;
+            
+            if (player1Score > player2Score) {
+                winner = "Spieler 1";
+            } else if (player2Score > player1Score) {
+                winner = "Spieler 2";
+            } else {
+                winner = "Unentschieden";
+            }
+            
+            JOptionPane.showMessageDialog(this, "Spiel beendet!\n\nSpieler 1: " + player1Score + " Punkte\nSpieler 2: " + player2Score + " Punkte\n\nGewinner: " + winner);
+            System.exit(0);
         }
-        firstCardIndex = -1; // Zurücksetzen des ersten Kartenindex
-        secondCardIndex = -1; // Zurücksetzen des zweiten Kartenindex
+        
+        firstCardIndex = -1;
+        secondCardIndex = -1;
     }
 
     private class CardListener implements ActionListener {
@@ -97,7 +115,6 @@ public class MemoryGame extends JFrame {
 
         public void actionPerformed(ActionEvent event) {
             if (cardButtons[index].getIcon() == null) {
-                // Überprüfen, ob die Karte bereits aufgedeckt ist
                 if (firstCardIndex == -1) {
                     firstCardIndex = index;
                     showCard(firstCardIndex);
@@ -122,4 +139,3 @@ public class MemoryGame extends JFrame {
         });
     }
 }
-
