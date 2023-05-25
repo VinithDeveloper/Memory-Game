@@ -13,7 +13,7 @@ public class MemoryGame extends JFrame {
     private final int IMAGE_SIZE = 80;
     private final int NUM_CARDS = ROWS * COLS;
     private final int NUM_IMAGES = NUM_CARDS / 2;
-    private final String IMAGE_DIR = "C:\\Users\\Vinith\\OneDrive\\Desktop\\testproject\\src\\testproject\\images\\";
+    private final String IMAGE_DIR = "src/testproject/images/";
 
     private ArrayList<String> cardNames; // Liste zum Speichern der Namen der Karten
     private ArrayList<ImageIcon> shuffledIcons; // Liste zum Speichern der gemischten Icons
@@ -113,48 +113,48 @@ public class MemoryGame extends JFrame {
             if (playerScores[0] > playerScores[1]) {
                 JOptionPane.showMessageDialog(this, "Spieler 1 gewinnt mit " + playerScores[0] + " Punkten!");
             } else if (playerScores[1] > playerScores[0]) {
-                JOptionPane.showMessageDialog(this, "Spieler 2 gewinnt mit " + playerScores[1] + " Punkten!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Unentschieden! Beide Spieler haben " + playerScores[0] + " Punkte erreicht!");
-            }
+	            JOptionPane.showMessageDialog(this, "Spieler 2 gewinnt mit " + playerScores[1] + " Punkten!");
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Unentschieden! Beide Spieler haben " + playerScores[0] + " Punkte erreicht!");
+	        }
 
-            System.exit(0); // Programm beenden
-        }
+	        System.exit(0); 
+	    }
 
-        firstCardIndex = -1; // Zurücksetzen des ersten Kartenindex
-        secondCardIndex = -1; // Zurücksetzen des zweiten Kartenindex
-    }
+	    firstCardIndex = -1; // Zurücksetzen des ersten Kartenindex
+	    secondCardIndex = -1; // Zurücksetzen des zweiten Kartenindex
+	}
 
-    private class CardListener implements ActionListener {
-        private int index;
+	private class CardListener implements ActionListener {
+	    private int index;
 
-        public CardListener(int index) {
-            this.index = index;
-        }
+	    public CardListener(int index) {
+	        this.index = index;
+	    }
 
-        public void actionPerformed(ActionEvent event) {
-            if (cardButtons[index].getIcon() == null) {
-                if (firstCardIndex == -1) {
-                    firstCardIndex = index;
-                    showCard(firstCardIndex);
-                } else if (secondCardIndex == -1 && index != firstCardIndex) {
-                    secondCardIndex = index;
-                    showCard(secondCardIndex);
-                    javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
-                        public void actionPerformed(ActionEvent event) {
-                            checkMatch();
-                        }
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
-                }
-            }
-        }
-    }
+	    public void actionPerformed(ActionEvent event) {
+	        if (cardButtons[index].getIcon() == null) {
+	            if (firstCardIndex == -1) {
+	                firstCardIndex = index;
+	                showCard(firstCardIndex);
+	            } else if (secondCardIndex == -1 && index != firstCardIndex) {
+	                secondCardIndex = index;
+	                showCard(secondCardIndex);
+	                javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
+	                    public void actionPerformed(ActionEvent event) {
+	                        checkMatch();
+	                    }
+	                });
+	                timer.setRepeats(false);
+	                timer.start();
+	            }
+	        }
+	    }
+	}
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MemoryGame game = new MemoryGame();
-        });
-    }
+	public static void main(String[] args) {
+	    SwingUtilities.invokeLater(() -> {
+	        MemoryGame game = new MemoryGame();
+	    });
+	}
 }
