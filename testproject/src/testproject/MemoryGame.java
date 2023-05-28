@@ -19,8 +19,8 @@ import javax.swing.JFrame;
 public class MemoryGame extends JFrame {
 	private final int ROWS = 4;
 	private final int COLS = 5;
-	private final int CARD_SIZE = 100;
-	private final int IMAGE_SIZE = 100;
+	private final int CARD_SIZE = 170;
+	private final int IMAGE_SIZE = 170;
 	private final int NUM_CARDS = ROWS * COLS;
 	private final int NUM_IMAGES = NUM_CARDS / 2;
 	private final String IMAGE_DIR = "src/testproject/images/";
@@ -57,34 +57,46 @@ public class MemoryGame extends JFrame {
 			cardButtons[i] = button; // Button zum Array hinzufügen
 		}
 
-		JPanel cardPanel = new JPanel(new GridLayout(ROWS, COLS)); // JPanel mit Rasterlayout erstellen
+		JPanel cardPanel = new JPanel(new GridLayout(ROWS, COLS)); 
 		for (int i = 0; i < NUM_CARDS; i++) {
-			cardPanel.add(cardButtons[i]); // Kartenbuttons zum JPanel hinzufügen
+			cardPanel.add(cardButtons[i]); 
 		}
 
-		playerScores = new int[2]; // Array für die Punktzahlen der Spieler erstellen
+		playerScores = new int[2]; 
 
 		player1ScoreLabel = new JLabel("Spieler 1: 0 Punkte"); // Label für die Punktzahl des Spielers 1 erstellen
+		player1ScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+		player1ScoreLabel.setForeground(Color.BLUE); // Textfarbe ändern
+		player1ScoreLabel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2)); // Eine Grenze um das Label hinzufügen
+				
 		player2ScoreLabel = new JLabel("Spieler 2: 0 Punkte"); // Label für die Punktzahl des Spielers 2 erstellen
+		player2ScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+		player2ScoreLabel.setForeground(Color.RED); // Textfarbe ändern
+		player2ScoreLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2)); // Eine Grenze um das Label hinzufügen
+		
 		currentPlayerLabel = new JLabel("Aktueller Spieler: Spieler 1"); // Label für den aktuellen Spieler erstellen
+		currentPlayerLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+		currentPlayerLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Eine Grenze um das Label hinzufügen
+		// Neues Panel für die Spielerinformationen
+		JPanel playerInfoPanel = new JPanel(new GridLayout(1, 3)); 
+		playerInfoPanel.add(player1ScoreLabel); 
+		playerInfoPanel.add(player2ScoreLabel); 
+		playerInfoPanel.add(currentPlayerLabel); 
 
-		cardPanel.add(player1ScoreLabel); // Punktzahllabel für Spieler 1 zum JPanel hinzufügen
-		cardPanel.add(player2ScoreLabel); // Punktzahllabel für Spieler 2 zum JPanel hinzufügen
-		cardPanel.add(currentPlayerLabel); // Label für den aktuellen Spieler zum JPanel hinzufügen
+		// Verwenden Sie BorderLayout und fügen Sie die Panels entsprechend hinzu
+		setLayout(new BorderLayout()); 
+		add(cardPanel, BorderLayout.CENTER);
+		add(playerInfoPanel, BorderLayout.SOUTH);
 
-		add(cardPanel); // JPanel zum JFrame hinzufügen
 		pack();
 		setTitle("Memory Game");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		pairsFound = 0; // Anfangszustand: keine Paare gefunden
-		setIconImage(Toolkit.getDefaultToolkit()
-				.getImage(MemoryGame.class
-				.getResource("/testproject/images/memoryBild.png")));
-    
+		pairsFound = 0;
+		setIconImage(Toolkit.getDefaultToolkit().getImage("src/testproject/images/memoryBild.png"));
 	}
-
+	
 	private void showCard(int index) {
 		String imageName = cardNames.get(index);
 		String imagePath = IMAGE_DIR + imageName;
