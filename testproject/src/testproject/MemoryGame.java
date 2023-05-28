@@ -33,10 +33,13 @@ public class MemoryGame extends JFrame {
     private JLabel player2ScoreLabel; // Label für die Punktzahl des Spielers 2
     private JLabel currentPlayerLabel; // Label für den aktuellen Spieler
 
+    private ImageIcon backImage; // Hintergrundbild für die Rückseite der Karten
+
     public MemoryGame() {
         cardNames = new ArrayList<>(); // Neue Liste für die Karten-Namen erstellen
-        String[] imageNames = { "memoryBildEins.jpg", "memoryBildZwei.jpg", "memoryBildDrei.jpg", "memoryBildVier.jpeg","memoryBildFunf.jpeg", "memoryBildSechs.jpg",
-                "memoryBildSieben.jpg", "memoryBildAcht.jpg","memoryBildNeun.jpg","memoryBildZehn.jpg" };
+        String[] imageNames = { "memoryBildEins.jpg", "memoryBildZwei.jpg", "memoryBildDrei.jpg", "memoryBildVier.jpeg",
+                "memoryBildFunf.jpeg", "memoryBildSechs.jpg", "memoryBildSieben.jpg", "memoryBildAcht.jpg",
+                "memoryBildNeun.jpg", "memoryBildZehn.jpg" };
         for (String imageName : imageNames) {
             cardNames.add(imageName); // Karten-Namen zur Liste hinzufügen
             cardNames.add(imageName); // Jeden Namen doppelt hinzufügen, um Paare zu erstellen
@@ -46,15 +49,14 @@ public class MemoryGame extends JFrame {
         Collections.shuffle(cardNames); // Karten-Namen mischen
 
         cardButtons = new JButton[NUM_CARDS]; // Array für die Kartenbuttons erstellen
-        String imagePath = "src/testproject/images/MemoryBackCard.jpg"; //Rückseite der Karten img
-        ImageIcon backgroundImage = new ImageIcon(imagePath); //zum Pfad verknüpfen
+        backImage = new ImageIcon(IMAGE_DIR + "MemoryBackCard.jpg"); // Hintergrundbild für die Rückseite der Karten
+        
 
         for (int i = 0; i < NUM_CARDS; i++) {
-            JButton button = new JButton();
+            JButton button = new JButton(backImage); // Setze das Hintergrundbild als Standard für alle Kartenbuttons
             button.setPreferredSize(new Dimension(CARD_SIZE, CARD_SIZE));
             button.addActionListener(new CardListener(i));
-            cardButtons[i] = button; // Button zum Array hinzufügen           
-            //cardButtons[i].setIcon(backgroundImage); //Rückseite der Karte setzen
+            cardButtons[i] = button; // Button zum Array hinzufügen
             
         }
 
@@ -66,7 +68,8 @@ public class MemoryGame extends JFrame {
         playerScores = new int[2];
 
         JPanel playerInfoPanel = new JPanel(new GridLayout(1, 3));
-
+        
+     
         player1ScoreLabel = new JLabel(player1Name + ": 0 Punkte"); // Label für die Punktzahl des Spielers 1 erstellen
         player1ScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
         player1ScoreLabel.setForeground(Color.BLUE); // Textfarbe ändern
@@ -102,6 +105,20 @@ public class MemoryGame extends JFrame {
     }
 
     private void enterPlayerNames() {
+        // Schriftart Sternbach UFC Schrift einbinden
+        Font sternbachFont = null;
+        Font sternbachItalicFont = null;
+        Font sternbachHollowFont = null;
+        
+        try {
+            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
+            sternbachItalicFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Italic.otf")).deriveFont(Font.PLAIN, 20);
+            sternbachHollowFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Hollow.otf")).deriveFont(Font.PLAIN, 20);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+        
+        //Eingaben
         JDialog dialog = new JDialog(this, "Spieler-Namen eingeben", true);
         dialog.setSize(400, 180);
         dialog.setLocationRelativeTo(this);
@@ -110,26 +127,26 @@ public class MemoryGame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         JLabel title = new JLabel("UFC Memory Game");
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setFont(sternbachFont.deriveFont(30f)); // UFC Font
         title.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(title, BorderLayout.NORTH);
 
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
 
         JLabel player1Label = new JLabel("Spieler 1:");
-        player1Label.setFont(new Font("Arial", Font.BOLD, 16));
+        player1Label.setFont(sternbachItalicFont.deriveFont(20f)); // UFC Font mit Italic
         formPanel.add(player1Label);
 
         JTextField player1Field = new JTextField();
-        player1Field.setFont(new Font("Arial", Font.PLAIN, 16));
+        player1Field.setFont(sternbachHollowFont.deriveFont(16f)); // UFC Font mit Hollow
         formPanel.add(player1Field);
 
         JLabel player2Label = new JLabel("Spieler 2:");
-        player2Label.setFont(new Font("Arial", Font.BOLD, 16));
+        player2Label.setFont(sternbachItalicFont.deriveFont(20f)); // UFC Font mit Italic
         formPanel.add(player2Label);
 
         JTextField player2Field = new JTextField();
-        player2Field.setFont(new Font("Arial", Font.PLAIN, 16));
+        player2Field.setFont(sternbachHollowFont.deriveFont(16f)); // UFC Font mit Hollow
         formPanel.add(player2Field);
 
         panel.add(formPanel, BorderLayout.CENTER);
@@ -137,11 +154,17 @@ public class MemoryGame extends JFrame {
         JPanel buttonPanel = new JPanel();
 
         JButton startButton = new JButton("Spiel starten");
-        startButton.setFont(new Font("Arial", Font.BOLD, 16));
+        startButton.setFont(sternbachFont.deriveFont(16f)); // UFC Font mit Hollow
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 player1Name = player1Field.getText();
                 player2Name = player2Field.getText();
+                
+                buttonPanel.add(startButton);
+                panel.add(buttonPanel, BorderLayout.SOUTH);
+
+                dialog.add(panel);
+                dialog.setVisible(true);
 
                 if (!player1Name.isEmpty() && !player2Name.isEmpty()) {
                     dialog.dispose();
@@ -171,7 +194,7 @@ public class MemoryGame extends JFrame {
             Image scaledImage = image.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_SMOOTH);
             ImageIcon scaledIcon = new ImageIcon(scaledImage);
             cardButtons[index].setIcon(scaledIcon);
-            cardButtons[index].setDisabledIcon(scaledIcon); // Setzen Sie das Icon, wenn die Karte deaktiviert ist (aufgedeckt wurde)
+            cardButtons[index].setDisabledIcon(scaledIcon);	
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -180,11 +203,15 @@ public class MemoryGame extends JFrame {
         currentPlayerLabel.setText("Aktueller Spieler: " + getPlayerName(currentPlayer));
     }
 
-
     private void hideCard(int index) {
-        cardButtons[index].setIcon(null); // Icon des Kartenbuttons entfernen
+        String imagePath = IMAGE_DIR + "MemoryBackCard.jpg"; 
+        ImageIcon backgroundIcon = new ImageIcon(imagePath);
+        Image backgroundImage = backgroundIcon.getImage().getScaledInstance(CARD_SIZE, CARD_SIZE, Image.SCALE_SMOOTH); //bild ist skaliert bei hide
+        ImageIcon scaledBackgroundIcon = new ImageIcon(backgroundImage);
+        cardButtons[index].setIcon(scaledBackgroundIcon); // Icon des Kartenbuttons auf das skalierte Hintergrundbild setzen
         cardButtons[index].setEnabled(true); // Kartenbutton aktivieren, um ihn klickbar zu machen
     }
+
 
     private void checkMatch() {
         if (cardNames.get(firstCardIndex).equals(cardNames.get(secondCardIndex)) && firstCardIndex != secondCardIndex) {
@@ -235,7 +262,7 @@ public class MemoryGame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent event) {
-            if (cardButtons[index].getIcon() == null) {
+            if (cardButtons[index].getIcon() == backImage) {
                 if (firstCardIndex == -1) {
                     firstCardIndex = index;
                     showCard(firstCardIndex);
