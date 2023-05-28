@@ -4,13 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 
 public class MemoryGame extends JFrame {
     private final int ROWS = 4;
     private final int COLS = 5;
     private final int CARD_SIZE = 100;
-    private final int IMAGE_SIZE = 80;
+    private final int IMAGE_SIZE = 100;
     private final int NUM_CARDS = ROWS * COLS;
     private final int NUM_IMAGES = NUM_CARDS / 2;
     private final String IMAGE_DIR = "src/testproject/images/";
@@ -29,7 +33,7 @@ public class MemoryGame extends JFrame {
 
     public MemoryGame() {
         cardNames = new ArrayList<>(); // Neue Liste für die Karten-Namen erstellen
-        String[] imageNames = {"ananas.jpg", "apfel.jpg", "bananen.jpg", "birne.jpg", "erdbeere.jpg", "kirsche.jpg", "orange.jpg", "trauben.jpg", "wassermelone.jpg", "zitrone.jpg"};
+        String[] imageNames = {"ananas.jpg", "apfel.jpg", "bananen.jpg", "birne.jpg", "erdbeere.jpg", "kirsche.jpg", "orange.jpg", "trauben.jpg", "wassermelone.jpg", "card2.png"};
         for (String imageName : imageNames) {
             cardNames.add(imageName); // Karten-Namen zur Liste hinzufügen
             cardNames.add(imageName); // Jeden Namen doppelt hinzufügen, um Paare zu erstellen
@@ -73,14 +77,21 @@ public class MemoryGame extends JFrame {
     }
 
     private void showCard(int index) {
-        String imageName = cardNames.get(index); // Namen der Karte anhand des Index abrufen
-        String imagePath = IMAGE_DIR + imageName; // Pfad zum Bild erstellen
-        ImageIcon icon = new ImageIcon(imagePath); // ImageIcon mit dem Bild erstellen
-        Image image = icon.getImage().getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_DEFAULT); // Bild skalieren
-        cardButtons[index].setIcon(new ImageIcon(image)); // Icon zum Kartenbutton hinzufügen
-        cardButtons[index].setEnabled(false); // Kartenbutton deaktivieren, um ihn nicht erneut zu klicken
+        String imageName = cardNames.get(index);
+        String imagePath = IMAGE_DIR + imageName;
+        ImageIcon icon = new ImageIcon(imagePath);
 
-        currentPlayerLabel.setText("Aktueller Spieler: Spieler " + currentPlayer); // Anzeigen des aktuellen Spielers
+        try {
+            BufferedImage image = ImageIO.read(new File(imagePath));
+            Image scaledImage = image.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+            cardButtons[index].setIcon(scaledIcon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        cardButtons[index].setEnabled(false);
+        currentPlayerLabel.setText("Aktueller Spieler: Spieler " + currentPlayer);
     }
 
     private void hideCard(int index) {
