@@ -10,6 +10,8 @@
 	import java.io.IOException;
 	import javax.swing.JFrame;
 	
+	
+	
 	public class MemoryGame extends JFrame {
 	    private final int ROWS = 4;
 	    private final int COLS = 5;
@@ -115,6 +117,7 @@
 	    	            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
 	    	            sternbachItalicFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Italic.otf")).deriveFont(Font.PLAIN, 20);
 	    	            sternbachHollowFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Hollow.otf")).deriveFont(Font.PLAIN, 20);
+	    	            
 	    	        } catch (FontFormatException | IOException e) {
 	    	            e.printStackTrace();
 	    	        }
@@ -131,7 +134,7 @@
 	        title.setFont(sternbachFont.deriveFont(30f)); // UFC Font
 	        title.setHorizontalAlignment(SwingConstants.CENTER);
 	        panel.add(title, BorderLayout.NORTH);
-	
+	        
 	        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
 	
 	        JLabel player1Label = new JLabel("Spieler 1:");
@@ -161,8 +164,6 @@
 	                player1Name = player1Field.getText();
 	                player2Name = player2Field.getText();
 	             
-	                //buttonPanel.add(startButton);
-	                //panel.add(buttonPanel, BorderLayout.SOUTH);
 	
 	                if (!player1Name.isEmpty() && !player2Name.isEmpty()) {
 	                    dialog.dispose();
