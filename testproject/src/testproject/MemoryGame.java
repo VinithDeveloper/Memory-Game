@@ -251,7 +251,7 @@
 
 	    private void showWinnerDialog(String winnerName, int winnerScore, int loserScore) {
 	        JDialog dialog = new JDialog(this, "Spiel beendet", true);
-	        dialog.setSize(300, 300);
+	        dialog.setSize(400, 400);
 	        dialog.setLocationRelativeTo(this);
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -267,17 +267,17 @@
 	        constraints.insets = new Insets(10, 10, 10, 10);
 	        panel.add(titleLabel, constraints);
 
-	        JLabel messageLabel = new JLabel(winnerName + " gewinnt mit " + winnerScore + " Punkten!");
-	        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        messageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        JLabel winnerMessageLabel = new JLabel("<html><span style='font-family: Sternbach; font-style: italic; font-size: 16px;'>"
+	                + winnerName + " gewinnt</span> mit " + winnerScore + " Punkten!</html>");
+	        winnerMessageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	        constraints.gridx = 0;
 	        constraints.gridy = 1;
 	        constraints.gridwidth = 2;
 	        constraints.insets = new Insets(0, 10, 10, 10);
-	        panel.add(messageLabel, constraints);
+	        panel.add(winnerMessageLabel, constraints);
 
 	        ImageIcon winnerImageIcon = new ImageIcon("src/testproject/images/Spielergewinnt.png");
-	        Image winnerImage = winnerImageIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+	        Image winnerImage = winnerImageIcon.getImage().getScaledInstance(250, -1, Image.SCALE_SMOOTH);
 	        JLabel winnerImageLabel = new JLabel(new ImageIcon(winnerImage));
 	        constraints.gridx = 0;
 	        constraints.gridy = 2;
@@ -285,14 +285,13 @@
 	        constraints.insets = new Insets(0, 10, 10, 10);
 	        panel.add(winnerImageLabel, constraints);
 
-	        JLabel scoreLabel = new JLabel("Verlierer: " + loserScore + " Punkte");
-	        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        JLabel loserScoreLabel = new JLabel("Verlierer: " + loserScore + " Punkte");
+	        loserScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	        constraints.gridx = 0;
 	        constraints.gridy = 3;
 	        constraints.gridwidth = 2;
 	        constraints.insets = new Insets(0, 10, 10, 10);
-	        panel.add(scoreLabel, constraints);
+	        panel.add(loserScoreLabel, constraints);
 
 	        dialog.getContentPane().add(panel);
 	        dialog.setVisible(true);
