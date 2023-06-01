@@ -91,9 +91,9 @@
 	        playerInfoPanel.add(currentPlayerLabel);
 	
 	        // Verwenden Sie BorderLayout und fügen Sie die Panels entsprechend hinzu
-	        setLayout(new BorderLayout());
-	        add(cardPanel, BorderLayout.CENTER);
-	        add(playerInfoPanel, BorderLayout.SOUTH);
+	        getContentPane().setLayout(new BorderLayout());
+	        getContentPane().add(cardPanel, BorderLayout.CENTER);
+	        getContentPane().add(playerInfoPanel, BorderLayout.SOUTH);
 	
 	        // Dialog anzeigen, um die Namen der Spieler einzugeben
 	        enterPlayerNames();
@@ -126,7 +126,7 @@
 	        JDialog dialog = new JDialog(this, "Spieler-Namen eingeben", true);
 	        dialog.setSize(400, 180);
 	        dialog.setLocationRelativeTo(this);
-	        dialog.setLayout(new BorderLayout());
+	        dialog.getContentPane().setLayout(new BorderLayout());
 	
 	        JPanel panel = new JPanel(new BorderLayout());
 	
@@ -179,7 +179,7 @@
 	        buttonPanel.add(startButton);
 	        panel.add(buttonPanel, BorderLayout.SOUTH);
 	
-	        dialog.add(panel);
+	        dialog.getContentPane().add(panel);
 	        dialog.setVisible(true);
 	    }
 	
@@ -192,7 +192,6 @@
 	            BufferedImage image = ImageIO.read(new File(imagePath));
 	            Image scaledImage = image.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_SMOOTH);
 	            ImageIcon scaledIcon = new ImageIcon(scaledImage);
-	            cardButtons[index].setIcon(scaledIcon);
 	            cardButtons[index].setDisabledIcon(scaledIcon);	
 	        } catch (IOException e) {
 	            e.printStackTrace();
@@ -211,38 +210,117 @@
 	        if (cardNames.get(firstCardIndex).equals(cardNames.get(secondCardIndex)) && firstCardIndex != secondCardIndex) {
 	            pairsFound++; // Anzahl der gefundenen Paare erhöhen
 	            int currentPlayerScore = playerScores[currentPlayer - 1]; // Punktzahl des aktuellen Spielers abrufen
-	
+
 	            currentPlayerScore++; // Punktzahl des aktuellen Spielers erhöhen
 	            playerScores[currentPlayer - 1] = currentPlayerScore; // Aktualisierte Punktzahl speichern
 	            player1ScoreLabel.setText(player1Name + ": " + playerScores[0] + " Punkte"); // Punkteanzeigen aktualisieren für Spieler 1
 	            player2ScoreLabel.setText(player2Name + ": " + playerScores[1] + " Punkte"); // Punkteanzeigen aktualisieren für Spieler 2
-	
+
 	            cardButtons[firstCardIndex].setEnabled(false); // Erstes Kartenpaar deaktivieren
 	            cardButtons[secondCardIndex].setEnabled(false); // Zweites Kartenpaar deaktivieren
 	        } else {
 	            hideCard(firstCardIndex); // Erstes Kartenpaar verstecken
 	            hideCard(secondCardIndex); // Zweites Kartenpaar verstecken
-	
+
 	            currentPlayer = (currentPlayer == 1) ? 2 : 1; // Spieler wechseln
 	            currentPlayerLabel.setText("Aktueller Spieler: " + getPlayerName(currentPlayer)); // Anzeigen des aktuellen Spielers
 	        }
-	
+
 	        if (pairsFound == NUM_IMAGES) {
 	            // Überprüfen, ob alle Paare gefunden wurden
-	            if (playerScores[0] > playerScores[1]) {
-	                JOptionPane.showMessageDialog(this, getPlayerName(1) + " gewinnt mit " + playerScores[0] + " Punkten!");
-	            } else if (playerScores[1] > playerScores[0]) {
-	                JOptionPane.showMessageDialog(this, getPlayerName(2) + " gewinnt mit " + playerScores[1] + " Punkten!");
-	            } else {
-	                JOptionPane.showMessageDialog(this, "Unentschieden! Beide Spieler haben " + playerScores[0] + " Punkte erreicht!");
+	            String winnerName = getPlayerName(1);
+	            int winnerScore = playerScores[0];
+	            int loserScore = playerScores[1];
+
+	            if (playerScores[1] > playerScores[0]) {
+	                winnerName = getPlayerName(2);
+	                winnerScore = playerScores[1];
+	                loserScore = playerScores[0];
+	            } else if (playerScores[1] == playerScores[0]) {
+	                // Unentschieden
+	                showDrawDialog(playerScores[0]);
+	                return;
 	            }
-	
-	            System.exit(0);
+
+	            showWinnerDialog(winnerName, winnerScore, loserScore);
 	        }
-	
+
 	        firstCardIndex = -1; // Zurücksetzen des ersten Kartenindex
 	        secondCardIndex = -1; // Zurücksetzen des zweiten Kartenindex
 	    }
+
+	    private void showWinnerDialog(String winnerName, int winnerScore, int loserScore) {
+	        JDialog dialog = new JDialog(this, "Spiel beendet", true);
+	        dialog.setSize(300, 300);
+	        dialog.setLocationRelativeTo(this);
+	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+	        JPanel panel = new JPanel(new GridBagLayout());
+	        GridBagConstraints constraints = new GridBagConstraints();
+
+	        JLabel titleLabel = new JLabel("Spiel beendet");
+	        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+	        constraints.gridx = 0;
+	        constraints.gridy = 0;
+	        constraints.gridwidth = 2;
+	        constraints.insets = new Insets(10, 10, 10, 10);
+	        panel.add(titleLabel, constraints);
+
+	        JLabel messageLabel = new JLabel(winnerName + " gewinnt mit " + winnerScore + " Punkten!");
+	        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        messageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        constraints.gridx = 0;
+	        constraints.gridy = 1;
+	        constraints.gridwidth = 2;
+	        constraints.insets = new Insets(0, 10, 10, 10);
+	        panel.add(messageLabel, constraints);
+
+	        ImageIcon winnerImageIcon = new ImageIcon("src/testproject/images/Spielergewinnt.png");
+	        Image winnerImage = winnerImageIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+	        JLabel winnerImageLabel = new JLabel(new ImageIcon(winnerImage));
+	        constraints.gridx = 0;
+	        constraints.gridy = 2;
+	        constraints.gridwidth = 2;
+	        constraints.insets = new Insets(0, 10, 10, 10);
+	        panel.add(winnerImageLabel, constraints);
+
+	        JLabel scoreLabel = new JLabel("Verlierer: " + loserScore + " Punkte");
+	        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        constraints.gridx = 0;
+	        constraints.gridy = 3;
+	        constraints.gridwidth = 2;
+	        constraints.insets = new Insets(0, 10, 10, 10);
+	        panel.add(scoreLabel, constraints);
+
+	        dialog.getContentPane().add(panel);
+	        dialog.setVisible(true);
+	    }
+
+
+	    private void showDrawDialog(int score) {
+	        JDialog dialog = new JDialog(this, "Spiel beendet", true);
+	        dialog.setSize(300, 200);
+	        dialog.setLocationRelativeTo(this);
+	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+	        JPanel panel = new JPanel(new BorderLayout());
+
+	        JLabel titleLabel = new JLabel("Spiel beendet");
+	        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+	        panel.add(titleLabel, BorderLayout.NORTH);
+
+	        JLabel messageLabel = new JLabel("Unentschieden! Beide Spieler haben " + score + " Punkte erreicht!");
+	        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        messageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        panel.add(messageLabel, BorderLayout.CENTER);
+
+	        dialog.getContentPane().add(panel);
+	        dialog.setVisible(true);
+	    }
+
 	
 	    private String getPlayerName(int playerNumber) {
 	        return (playerNumber == 1) ? player1Name : player2Name;
@@ -278,6 +356,7 @@
 	    public static void main(String[] args) {
 	        SwingUtilities.invokeLater(() -> {
 	            MemoryGame game = new MemoryGame();
+	            
 	        });
 	    }
 	}
