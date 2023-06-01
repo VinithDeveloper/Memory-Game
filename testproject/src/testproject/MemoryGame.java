@@ -38,6 +38,7 @@
 	    private ImageIcon backImage; // Hintergrundbild für die Rückseite der Karten
 	
 	    public MemoryGame() {
+	    	
 	        cardNames = new ArrayList<>(); // Neue Liste für die Karten-Namen erstellen
 	        String[] imageNames = { "memoryBildEins.jpg", "memoryBildZwei.jpg", "memoryBildDrei.jpg", "memoryBildVier.jpeg",
 	                "memoryBildFunf.jpeg", "memoryBildSechs.jpg", "memoryBildSieben.jpg", "memoryBildAcht.jpg",
@@ -72,21 +73,33 @@
 	        playerScores = new int[2];
 	
 	        JPanel playerInfoPanel = new JPanel(new GridLayout(1, 3));
+	        Font sternbachFont = null;
+	        Font sternbachItalicFont = null;
+	        Font sternbachHollowFont = null;
+	        
+	        try {
+	            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
+	            sternbachItalicFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Italic.otf")).deriveFont(Font.PLAIN, 20);
+	            sternbachHollowFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Hollow.otf")).deriveFont(Font.PLAIN, 20);
+	            
+	        } catch (FontFormatException | IOException e) {
+	            e.printStackTrace();
+	        }
 	
 	        player1ScoreLabel = new JLabel(player1Name + ": 0 Punkte"); // Label für die Punktzahl des Spielers 1 erstellen
-	        player1ScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+	        player1ScoreLabel.setFont(sternbachFont.deriveFont(16f)); // Schriftart und -größe ändern
 	        player1ScoreLabel.setForeground(Color.BLUE); // Textfarbe ändern
 	        player1ScoreLabel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2)); // Eine Grenze um das Label hinzufügen
 	        playerInfoPanel.add(player1ScoreLabel);
 	
 	        player2ScoreLabel = new JLabel(player2Name + ": 0 Punkte"); // Label für die Punktzahl des Spielers 2 erstellen
-	        player2ScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+	        player2ScoreLabel.setFont(sternbachFont.deriveFont(16f)); // Schriftart und -größe ändern
 	        player2ScoreLabel.setForeground(Color.RED); // Textfarbe ändern
 	        player2ScoreLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2)); // Eine Grenze um das Label hinzufügen
 	        playerInfoPanel.add(player2ScoreLabel);
 	
 	        currentPlayerLabel = new JLabel("Aktueller Spieler: " + player1Name); // Label für den aktuellen Spieler erstellen
-	        currentPlayerLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Schriftart und -größe ändern
+	        currentPlayerLabel.setFont(sternbachFont.deriveFont(16f)); // Schriftart und -größe ändern
 	        currentPlayerLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Eine Grenze um das Label hinzufügen
 	        playerInfoPanel.add(currentPlayerLabel);
 	
@@ -111,12 +124,11 @@
 	    	        // Schriftart Sternbach UFC Schrift einbinden
 	    	        Font sternbachFont = null;
 	    	        Font sternbachItalicFont = null;
-	    	        Font sternbachHollowFont = null;
 	    	        
 	    	        try {
 	    	            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
 	    	            sternbachItalicFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Italic.otf")).deriveFont(Font.PLAIN, 20);
-	    	            sternbachHollowFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach-Hollow.otf")).deriveFont(Font.PLAIN, 20);
+	    	            
 	    	            
 	    	        } catch (FontFormatException | IOException e) {
 	    	            e.printStackTrace();
@@ -142,7 +154,8 @@
 	        formPanel.add(player1Label);
 	
 	        JTextField player1Field = new JTextField();
-	        player1Field.setFont(sternbachHollowFont.deriveFont(16f)); // UFC Font
+	        player1Field.setFont(sternbachItalicFont.deriveFont(16f)); // UFC Font mit Italic 
+	        player1Field.setForeground(Color.BLUE);
 	        formPanel.add(player1Field);
 	
 	        JLabel player2Label = new JLabel("Spieler 2:");
@@ -150,7 +163,8 @@
 	        formPanel.add(player2Label);
 	
 	        JTextField player2Field = new JTextField();
-	        player2Field.setFont(sternbachHollowFont.deriveFont(16f)); // UFC Font mit Hollow
+	        player2Field.setFont(sternbachItalicFont.deriveFont(16f)); // UFC Font mit Italic
+	        player2Field.setForeground(Color.RED);
 	        formPanel.add(player2Field);
 	
 	        panel.add(formPanel, BorderLayout.CENTER);
@@ -250,8 +264,18 @@
 	    }
 
 	    private void showWinnerDialog(String winnerName, int winnerScore, int loserScore) {
+	    	Font sternbachFont = null;
+ 	       
+ 	        try {
+ 	            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
+ 	            
+ 	            
+ 	        } catch (FontFormatException | IOException e) {
+ 	            e.printStackTrace();
+ 	        }
+ 	
 	        JDialog dialog = new JDialog(this, "Spiel beendet", true);
-	        dialog.setSize(400, 400);
+	        dialog.setSize(300, 300);
 	        dialog.setLocationRelativeTo(this);
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -260,24 +284,24 @@
 
 	        JLabel titleLabel = new JLabel("Spiel beendet");
 	        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+	        titleLabel.setFont(sternbachFont.deriveFont(30f));
 	        constraints.gridx = 0;
 	        constraints.gridy = 0;
 	        constraints.gridwidth = 2;
 	        constraints.insets = new Insets(10, 10, 10, 10);
 	        panel.add(titleLabel, constraints);
 
-	        JLabel winnerMessageLabel = new JLabel("<html><span style='font-family: Sternbach; font-style: italic; font-size: 16px;'>"
-	                + winnerName + " gewinnt</span> mit " + winnerScore + " Punkten!</html>");
-	        winnerMessageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        JLabel messageLabel = new JLabel(winnerName + " gewinnt mit " + winnerScore + " Punkten!");
+	        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        messageLabel.setFont(sternbachFont.deriveFont(16f));
 	        constraints.gridx = 0;
 	        constraints.gridy = 1;
 	        constraints.gridwidth = 2;
 	        constraints.insets = new Insets(0, 10, 10, 10);
-	        panel.add(winnerMessageLabel, constraints);
+	        panel.add(messageLabel, constraints);
 
 	        ImageIcon winnerImageIcon = new ImageIcon("src/testproject/images/Spielergewinnt.png");
-	        Image winnerImage = winnerImageIcon.getImage().getScaledInstance(250, -1, Image.SCALE_SMOOTH);
+	        Image winnerImage = winnerImageIcon.getImage().getScaledInstance(250, 150, Image.SCALE_SMOOTH);
 	        JLabel winnerImageLabel = new JLabel(new ImageIcon(winnerImage));
 	        constraints.gridx = 0;
 	        constraints.gridy = 2;
@@ -285,13 +309,14 @@
 	        constraints.insets = new Insets(0, 10, 10, 10);
 	        panel.add(winnerImageLabel, constraints);
 
-	        JLabel loserScoreLabel = new JLabel("Verlierer: " + loserScore + " Punkte");
-	        loserScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        JLabel scoreLabel = new JLabel("Verlierer: " + loserScore + " Punkte");
+	        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        scoreLabel.setFont(sternbachFont.deriveFont(16f));
 	        constraints.gridx = 0;
 	        constraints.gridy = 3;
 	        constraints.gridwidth = 2;
 	        constraints.insets = new Insets(0, 10, 10, 10);
-	        panel.add(loserScoreLabel, constraints);
+	        panel.add(scoreLabel, constraints);
 
 	        dialog.getContentPane().add(panel);
 	        dialog.setVisible(true);
@@ -299,6 +324,15 @@
 
 
 	    private void showDrawDialog(int score) {
+	    	Font sternbachFont = null;
+	 	       
+ 	        try {
+ 	            sternbachFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/testproject/fonts/Sternbach.otf")).deriveFont(Font.PLAIN, 20);
+ 	            
+ 	            
+ 	        } catch (FontFormatException | IOException e) {
+ 	            e.printStackTrace();
+ 	        }
 	        JDialog dialog = new JDialog(this, "Spiel beendet", true);
 	        dialog.setSize(300, 200);
 	        dialog.setLocationRelativeTo(this);
@@ -308,12 +342,12 @@
 
 	        JLabel titleLabel = new JLabel("Spiel beendet");
 	        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+	        titleLabel.setFont(sternbachFont.deriveFont(30f));
 	        panel.add(titleLabel, BorderLayout.NORTH);
 
 	        JLabel messageLabel = new JLabel("Unentschieden! Beide Spieler haben " + score + " Punkte erreicht!");
 	        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        messageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	        messageLabel.setFont(sternbachFont.deriveFont(16f));
 	        panel.add(messageLabel, BorderLayout.CENTER);
 
 	        dialog.getContentPane().add(panel);
